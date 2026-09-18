@@ -1,0 +1,8 @@
+nextviewmode (Cycles the viewmode, useful for accessing unlit mode)
+fov [value] (Changes your Field of View)
+open [mapname] (Opens a map in the files of the game)
+summon [blueprint] (Summons an object from the game files)
+restartlevel (Reloads the current map you are on)
+toggledebugcamera (Free Camera)
+r.setres 1280x720w (Takes the game out of fullscreen)
+destroytarget (Deletes the current object you are looking at)

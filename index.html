@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Fling Launcher</title>
+<link rel="icon" href="favicon.ico" />
+<style>
+  /* ---------------------------------------------------------------------
+     Theming. Every colour in this file comes from one of these tokens, so a
+     theme is just a block that redefines them. All six themes below (Dark,
+     Light, Crimson, Midnight, Terminal, Sunset) are normal, always-available
+     options in Settings. The active theme is applied as data-theme="..." on
+     <html>.
+     --------------------------------------------------------------------- */
+  :root,
+  html[data-theme="dark"] {
+    --bg: #0d0f0d;
+    --panel: #111310;
+    --panel-2: #171a15;
+    --hover: #1c1f19;
+    --modal: #141712;
+    --border: #2a2d26;
+    --border-hover: #4a4d3a;
+    --muted: #8a8c6f;
+    --dim: #4a4d3a;
+    --text: #e8e4d8;
+    --accent: #c98f3e;
+    --accent-hover: #dba24e;
+    --accent-glow: rgba(201, 143, 62, 0.55);
+    --accent-wash: rgba(201, 143, 62, 0.10);
+    --good: #9fb26a;
+    --danger: #c9703e;
+    --close-hover: #a3423a;
+    --console-bg: #000000;
+    --console-line: #1a1c17;
+    --scrim: rgba(0, 0, 0, 0.6);
+    --shadow: rgba(0, 0, 0, 0.4);
+    --hero-grad-a: #0d0f0d;
+    --hero-grad-b: #171a15;
+  }
+
+  html[data-theme="light"] {
+    --bg: #f4f2ec;
+    --panel: #ffffff;
+    --panel-2: #eae7dd;
+    --hover: #ded9cc;
+    --modal: #ffffff;
+    --border: #d3cec0;
+    --border-hover: #a9a28d;
+    --muted: #6b6857;
+    --dim: #9a9686;
+    --text: #23241d;
+    --accent: #b97a26;
+    --accent-hover: #cc8b34;
+    --accent-glow: rgba(185, 122, 38, 0.35);
+    --accent-wash: rgba(185, 122, 38, 0.08);
+    --good: #5d7a2e;
+    --danger: #b0552a;
+    --close-hover: #b34036;
+    --console-bg: #23241d;
+    --console-line: #3a3b31;
+    --scrim: rgba(40, 38, 30, 0.35);
+    --shadow: rgba(0, 0, 0, 0.16);
+    --hero-grad-a: #f4f2ec;
+    --hero-grad-b: #e3dfd3;
+  }
+
+  html[data-theme="crimson"] {
+    --bg: #100a0a; --panel: #170e0e; --panel-2: #1f1212; --hover: #2a1818;
+    --modal: #1a1010; --border: #3a2020; --border-hover: #5e3030;
+    --muted: #b08a8a; --dim: #6a4444; --text: #f2e6e4;
+    --accent: #c2352f; --accent-hover: #d84840;
+    --accent-glow: rgba(194, 53, 47, 0.55); --accent-wash: rgba(194, 53, 47, 0.12);
+    --good: #d8a24a; --danger: #e06a3a; --close-hover: #8f2721;
+    --console-bg: #080404; --console-line: #2a1616;
+    --scrim: rgba(0,0,0,0.65); --shadow: rgba(0,0,0,0.5);
+    --hero-grad-a: #100a0a; --hero-grad-b: #241313;
+  }
+
+  html[data-theme="midnight"] {
+    --bg: #0a0d16; --panel: #0f1320; --panel-2: #151a2b; --hover: #1d2340;
+    --modal: #12172a; --border: #232a44; --border-hover: #3c4670;
+    --muted: #8f9ac4; --dim: #4a5480; --text: #e4e8f7;
+    --accent: #4c7ef0; --accent-hover: #6a94f7;
+    --accent-glow: rgba(76, 126, 240, 0.55); --accent-wash: rgba(76, 126, 240, 0.12);
+    --good: #4fc7c0; --danger: #e0673f; --close-hover: #8f3550;
+    --console-bg: #04060d; --console-line: #1a2138;
+    --scrim: rgba(0,0,0,0.65); --shadow: rgba(0,0,0,0.5);
+    --hero-grad-a: #0a0d16; --hero-grad-b: #161c33;
+  }
+
+  html[data-theme="terminal"] {
+    --bg: #05080a; --panel: #080d0e; --panel-2: #0d1416; --hover: #14211f;
+    --modal: #0a1112; --border: #1b2c28; --border-hover: #2f4f45;
+    --muted: #6fae90; --dim: #3a5f52; --text: #cdf2dd;
+    --accent: #37d17a; --accent-hover: #4ae68d;
+    --accent-glow: rgba(55, 209, 122, 0.5); --accent-wash: rgba(55, 209, 122, 0.10);
+    --good: #9fe86a; --danger: #d8a13a; --close-hover: #8a3b32;
+    --console-bg: #000000; --console-line: #14251f;
+    --scrim: rgba(0,0,0,0.7); --shadow: rgba(0,0,0,0.55);
+    --hero-grad-a: #05080a; --hero-grad-b: #0d1a18;
+  }
+
+  html[data-theme="sunset"] {
+    --bg: #150f1c; --panel: #1c1426; --panel-2: #241a30; --hover: #2f2240;
+    --modal: #1f1629; --border: #382a49; --border-hover: #5b4374;
+    --muted: #b79ccb; --dim: #6a5482; --text: #f4e9f6;
+    --accent: #f07a4a; --accent-hover: #ff8f5e;
+    --accent-glow: rgba(240, 122, 74, 0.5); --accent-wash: rgba(240, 122, 74, 0.12);
+    --good: #f0c04a; --danger: #e05a7a; --close-hover: #9c3450;
+    --console-bg: #0d0813; --console-line: #2a1e38;
+    --scrim: rgba(0,0,0,0.6); --shadow: rgba(0,0,0,0.5);
+    --hero-grad-a: #150f1c; --hero-grad-b: #2a1d38;
+  }
+
+  /* Animations off (Settings toggle) — kill every transition/animation
+     rather than unpicking them rule by rule, so nothing new can slip
+     through later. */
+  html[data-animations="off"],
+  html[data-animations="off"] * ,
+  html[data-animations="off"] *::before,
+  html[data-animations="off"] *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+  }
+  body { display: flex; flex-direction: column; border-radius: 8px; }
+
+  /* ---------- Custom titlebar (frame: false — no native OS border) ---------- */
+  .titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 44px;
+    flex-shrink: 0;
+    padding: 0 8px 0 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+    -webkit-app-region: drag;
+  }
+  .nav-tabs, .title-actions { -webkit-app-region: no-drag; }
+  .brand { display: flex; align-items: baseline; gap: 8px; }
+  .brand-name { font-size: 18px; font-weight: 900; letter-spacing: -0.02em; }
+  .brand-sub { font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted); }
+
+  .nav-tabs { display: flex; gap: 4px; }
+  .nav-tab {
+    background: none; border: none; color: var(--muted); cursor: pointer;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    padding: 8px 18px; border-radius: 6px;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .nav-tab:hover { color: var(--text); background: var(--hover); }
+  .nav-tab.active { color: var(--bg); background: var(--accent); }
+
+  .title-actions { display: flex; align-items: center; gap: 2px; }
+
+  .update-pill {
+    display: none;
+    position: relative;
+    align-items: center;
+    overflow: hidden;
+    margin-right: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--accent);
+    background: var(--accent-wash);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .update-pill.show { display: inline-flex; }
+  .update-pill:hover { background: var(--accent-glow); }
+  .update-pill:disabled { cursor: default; opacity: 0.75; }
+  .update-pill-fill {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 0%;
+    background: var(--accent-glow);
+    transition: width 0.2s ease;
+    z-index: 0;
+  }
+  .update-pill-label { position: relative; z-index: 1; }
+  .icon-btn {
+    background: none; border: none; cursor: pointer; padding: 8px; border-radius: 6px;
+    color: var(--muted); display: flex; align-items: center;
+  }
+  .icon-btn:hover { background: var(--hover); color: var(--text); }
+  .win-controls { display: flex; gap: 2px; margin-left: 6px; }
+  .win-btn {
+    width: 34px; height: 30px; border: none; background: none; color: var(--muted);
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    border-radius: 4px; font-size: 13px; line-height: 1;
+  }
+  .win-btn:hover { background: var(--hover); color: var(--text); }
+  .win-btn.close-btn:hover { background: var(--close-hover); color: #fff; }
+
+  .body-row { display: flex; flex: 1; min-height: 0; }
+  .body-row.hidden { display: none; }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    width: 78px;
+    border-right: 1px solid var(--border);
+    background: var(--panel);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    overflow-y: auto;
+  }
+  .sidebar::-webkit-scrollbar { width: 6px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 3px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar-group { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; }
+
+  /* Each roster entry is now a button + an abbreviated caption underneath,
+     so the short name (A1 / HN2 / HN2D / HNHAS...) stays readable even when
+     an icon image is covering the button's own label. */
+  .game-item {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    width: 100%; flex-shrink: 0;
+  }
+  .game-btn-cap {
+    font-size: 8px; font-weight: 700; letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--dim);
+    max-width: 72px; text-align: center;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    pointer-events: none;
+    transition: color 0.15s ease;
+  }
+  .game-item.selected .game-btn-cap { color: var(--accent); }
+  .sidebar-group-label {
+    font-size: 9px; color: var(--dim); letter-spacing: 0.06em;
+    margin-bottom: 2px; text-align: center;
+  }
+  .sidebar-divider {
+    width: 32px; height: 1px; background: var(--border);
+    margin: 12px 0; flex-shrink: 0;
+  }
+
+  /* ---------- Grid tile ----------
+     Cover-art tile used by the Leaderboard tab's game picker (see
+     .grid-picker below). Cover art comes from assets/grids/<file>.png —
+     falls back to the text label if missing. */
+  .grid-tile {
+    width: 118px;
+    display: flex; flex-direction: column; align-items: stretch; gap: 4px;
+    cursor: pointer; background: none; border: none; padding: 0; color: inherit;
+    text-align: left;
+  }
+  .grid-tile-art {
+    width: 118px; height: 118px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--panel-2);
+    overflow: hidden; position: relative;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.15s ease, transform 0.1s ease;
+  }
+  .grid-tile-art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .grid-tile-fallback {
+    font-size: 10px; color: var(--dim); text-align: center; padding: 0 8px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .grid-tile:hover .grid-tile-art { border-color: var(--border-hover); }
+  .grid-tile:active .grid-tile-art { transform: scale(0.97); }
+  .grid-tile.selected .grid-tile-art { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+
+  /* ---------- Leaderboard view ---------- */
+  .leaderboard-view {
+    flex: 1; min-height: 0; overflow-y: auto;
+    padding: 32px 36px 40px;
+    display: none;
+  }
+  .leaderboard-view.open { display: block; animation: fadeInUp 0.25s ease; }
+  .leaderboard-heading { font-size: 26px; font-weight: 900; letter-spacing: -0.02em; margin: 0 0 4px; }
+  .leaderboard-sub { color: var(--muted); font-size: 13px; margin: 0 0 20px; }
+  .grid-picker {
+    display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 28px;
+  }
+  .leaderboard-results { border-top: 1px solid var(--border); padding-top: 20px; }
+  .leaderboard-title-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .leaderboard-title-row h3 { margin: 0; font-size: 16px; font-weight: 800; }
+  .leaderboard-category { font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.06em; }
+  .leaderboard-category-select {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+    background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+    border-radius: 6px; padding: 5px 8px; cursor: pointer; font-family: inherit;
+  }
+  .leaderboard-category-select:hover { border-color: var(--border-hover); }
+  .leaderboard-category-select:disabled { opacity: 0.5; cursor: default; }
+  .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .leaderboard-table th {
+    text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--dim); padding: 6px 10px; border-bottom: 1px solid var(--border);
+  }
+  .leaderboard-table td { padding: 9px 10px; border-bottom: 1px solid var(--console-line); }
+  .leaderboard-table tr:last-child td { border-bottom: none; }
+  .leaderboard-rank { font-weight: 800; color: var(--accent); width: 40px; }
+  .leaderboard-rank.gold { color: var(--good); }
+  .leaderboard-time { font-family: "Consolas", "SFMono-Regular", Menlo, monospace; color: var(--text); }
+  .leaderboard-video-link { color: var(--muted); font-size: 11px; text-decoration: none; }
+  .leaderboard-video-link:hover { color: var(--accent); }
+  .leaderboard-empty-hint { color: var(--dim); font-style: italic; font-size: 13px; }
+  .leaderboard-loading { color: var(--muted); font-size: 13px; }
+  .game-btn {
+    width: 44px; height: 44px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    background: var(--panel-2); color: var(--muted);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  }
+  .game-btn:hover { border-color: var(--border-hover); }
+  .game-btn:active { transform: scale(0.93); }
+  .game-btn.active {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+  }
+  .game-btn-icon {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .game-btn-label { position: relative; z-index: 0; pointer-events: none; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    flex: 1;
+    position: relative;
+    background: radial-gradient(circle at 75% 30%, var(--accent-wash), transparent 55%),
+                linear-gradient(120deg, var(--hero-grad-a) 45%, var(--hero-grad-b) 100%);
+    overflow: hidden;
+  }
+  .hero-bg-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0.55;
+    animation: fadeIn 0.35s ease;
+  }
+  .art-placeholder {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: flex-end;
+    padding-right: 40px;
+    opacity: 0.25; pointer-events: none;
+  }
+  .art-circle {
+    width: 420px; height: 420px; border-radius: 50%;
+    border: 1px solid var(--border-hover);
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--border-hover); padding: 0 32px;
+  }
+
+  .hero-content {
+    position: relative; z-index: 1;
+    height: 100%;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 32px;
+  }
+  .hero-content.fade-in { animation: fadeInUp 0.28s ease; }
+  .game-title { font-size: 36px; font-weight: 900; letter-spacing: -0.02em; margin: 0; line-height: 1; }
+  .status-row { margin-top: 8px; display: flex; align-items: center; gap: 6px; font-size: 12px; }
+  .status-row.good { color: var(--good); }
+  .status-row.dim { color: var(--muted); }
+  .status-row.placeholder { color: var(--dim); font-style: italic; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 0.55; } }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes welcomePop { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+  @keyframes welcomeMark { from { opacity: 0; transform: scale(0.5) rotate(-15deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+
+  .controls { display: flex; align-items: center; gap: 16px; position: relative; }
+  .play-btn {
+    padding: 12px 40px;
+    border-radius: 6px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 14px;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  .play-btn:hover { background: var(--accent-hover); }
+  .play-btn:active { transform: scale(0.96); }
+
+  /* ---------- Tools view (formerly "Console") ---------- */
+  .tools-view {
+    flex: 1; min-height: 0; overflow-y: auto;
+    padding: 32px 36px 40px;
+    display: none;
+  }
+  .tools-view.open { display: block; animation: fadeInUp 0.25s ease; }
+  .uuu-row { display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; }
+  .uuu-text { flex: 1 1 280px; min-width: 260px; }
+  .uuu-text h2 { margin: 0 0 12px; font-size: 26px; font-weight: 900; letter-spacing: -0.02em; }
+  .uuu-text p { color: var(--muted); font-size: 13px; line-height: 1.65; margin: 0 0 20px; }
+  .uuu-image-wrap {
+    flex: 1 1 320px; max-width: 480px;
+    border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+    background: var(--panel-2); display: flex; align-items: center; justify-content: center;
+    aspect-ratio: 16 / 10;
+  }
+  .uuu-image-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .uuu-image-fallback { font-size: 11px; color: var(--dim); text-align: center; padding: 0 20px; }
+  .download-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: var(--bg); border: none; border-radius: 6px;
+    padding: 11px 22px; font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+  .download-btn:hover { background: var(--accent-hover); }
+  .command-list-title {
+    margin: 32px 0 10px; font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--muted);
+  }
+  .command-box {
+    background: var(--console-bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px 18px; font-family: "Consolas", "SFMono-Regular", Menlo, monospace;
+    font-size: 12px; max-height: 260px; overflow-y: auto;
+  }
+  .command-row { display: flex; gap: 14px; padding: 5px 0; }
+  .command-row + .command-row { border-top: 1px solid var(--console-line); }
+  .command-name { color: var(--good); flex-shrink: 0; min-width: 150px; }
+  .command-desc { color: var(--muted); }
+  .command-box .empty-hint { color: var(--dim); font-style: italic; font-family: inherit; }
+
+  /* Floating menus (right-click sidebar menu + play launch menu) */
+  .floating-menu {
+    position: fixed;
+    background: var(--modal); border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden;
+    min-width: 200px; z-index: 80;
+    box-shadow: 0 8px 24px var(--shadow);
+  }
+  .floating-menu button {
+    width: 100%; text-align: left; background: none; border: none;
+    padding: 10px 14px; font-size: 13px; color: var(--text); cursor: pointer;
+    display: block;
+  }
+  .floating-menu button:hover:not(:disabled) { background: var(--hover); }
+  .floating-menu button:disabled { color: var(--dim); cursor: not-allowed; }
+  .floating-menu button + button { border-top: 1px solid var(--border); }
+  .floating-menu .menu-sub { display: block; font-size: 11px; color: var(--dim); margin-top: 2px; }
+  .floating-menu .danger { color: var(--danger); }
+
+  /* Toast (launch feedback) */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(12px);
+    background: var(--panel-2); border: 1px solid var(--border-hover);
+    padding: 10px 18px; border-radius: 6px; font-size: 12px; color: var(--text);
+    opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s;
+    z-index: 90;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ---------- Modal ---------- */
+  .overlay {
+    position: fixed; inset: 0; background: var(--scrim);
+    display: flex; align-items: center; justify-content: center; z-index: 50;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.15s ease;
+  }
+  .overlay.open { opacity: 1; visibility: visible; pointer-events: auto; }
+  .modal {
+    width: 380px; background: var(--modal); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden;
+    transform: translateY(10px) scale(0.98);
+    transition: transform 0.18s ease;
+  }
+  .overlay.open .modal { transform: none; }
+  .modal.modal-lg { width: 640px; max-width: calc(100vw - 48px); }
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 20px; border-bottom: 1px solid var(--border);
+  }
+  .modal-head span { font-size: 14px; font-weight: 700; }
+  .modal-body { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+  label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+  input[type="text"] {
+    margin-top: 6px; width: 100%; background: var(--bg);
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 12px; font-size: 14px; color: var(--text);
+    outline: none;
+  }
+  input[type="text"]:focus { border-color: var(--accent); }
+  input[type="text"]:disabled { color: var(--dim); cursor: not-allowed; }
+  .field-hint { margin-top: 4px; font-size: 11px; color: var(--dim); }
+
+  .path-row { display: flex; gap: 8px; margin-top: 6px; }
+  .path-row input { margin-top: 0; }
+  .browse-btn {
+    flex-shrink: 0; background: var(--panel-2); border: 1px solid var(--border);
+    color: var(--muted); border-radius: 6px; padding: 0 14px; font-size: 12px; cursor: pointer;
+  }
+  .browse-btn:hover { border-color: var(--border-hover); color: var(--text); }
+
+  select {
+    margin-top: 6px; width: 100%; background: var(--bg);
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 12px; font-size: 14px; color: var(--text);
+  }
+  select:focus { border-color: var(--accent); outline: none; }
+  /* Otherwise the dropdown list itself falls back to OS default colours and
+     flashes white in the dark themes. */
+  select option { background: var(--panel); color: var(--text); }
+
+  .section-title-row { display: flex; align-items: center; justify-content: space-between; }
+  .badge {
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--dim); border: 1px solid var(--border); border-radius: 10px;
+    padding: 2px 8px;
+  }
+  .disabled-section { opacity: 0.45; pointer-events: none; }
+
+  .modal-foot {
+    padding: 12px 20px; border-top: 1px solid var(--border);
+    display: flex; justify-content: flex-end; gap: 8px;
+  }
+  .btn-text { background: none; border: none; color: var(--muted); font-size: 12px; cursor: pointer; padding: 6px 10px; }
+  .btn-text:hover { color: var(--text); }
+  .btn-save { background: var(--accent); color: var(--bg); border: none; border-radius: 6px; font-size: 12px; font-weight: 600; padding: 6px 12px; cursor: pointer; }
+  .btn-save:hover { background: var(--accent-hover); }
+  .btn-save:disabled { background: var(--dim); color: var(--panel); cursor: not-allowed; }
+
+  /* ---------- Tutorial popup (shown on INSTALL click) ---------- */
+  .tutorial-modal-strip { display: flex; gap: 14px; }
+  .tutorial-modal-strip .tutorial-frame { width: 190px; height: 120px; flex: 1; }
+  .tutorial-modal-strip .tutorial-num { font-size: 12px; padding: 2px 7px; }
+  .tutorial-frame {
+    border-radius: 6px; border: 1px solid var(--border); background: var(--panel-2);
+    overflow: hidden; position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tutorial-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tutorial-frame .tutorial-fallback {
+    font-size: 10px; color: var(--dim); text-align: center; padding: 0 10px;
+  }
+  .tutorial-num {
+    position: absolute; top: 4px; left: 6px;
+    color: var(--muted); background: var(--panel);
+    border-radius: 3px;
+  }
+  .tutorial-desc { margin: 0; font-size: 13px; color: var(--dim); font-style: italic; line-height: 1.5; }
+  .checkbox-row {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--muted); cursor: pointer; user-select: none;
+  }
+  .setting-row { margin-top: 8px; text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--text); }
+  .checkbox-row input[type="checkbox"] {
+    width: 14px; height: 14px; accent-color: var(--accent); cursor: pointer;
+  }
+
+  /* ---------- Launch-choice popup (Multiplayer / Offline) ---------- */
+  .choice-list { display: flex; flex-direction: column; gap: 10px; }
+  .choice-option {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+    width: 100%; text-align: left;
+    background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; cursor: pointer; color: var(--text);
+  }
+  .choice-option:hover { border-color: var(--border-hover); background: var(--hover); }
+  .choice-option .choice-title { font-size: 13px; font-weight: 700; }
+  .choice-option .choice-sub { font-size: 11px; color: var(--dim); }
+
+  /* ---------- Welcome animation (first-launch only, one-shot) ---------- */
+  .welcome-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: var(--bg);
+    display: none; align-items: center; justify-content: center;
+    opacity: 1; transition: opacity 0.5s ease;
+  }
+  .welcome-overlay.show { display: flex; }
+  .welcome-overlay.fade-out { opacity: 0; }
+  .welcome-box { text-align: center; animation: welcomePop 0.5s ease; }
+  .welcome-mark {
+    width: 60px; height: 60px; border-radius: 14px; margin: 0 auto 16px;
+    background: var(--accent);
+    box-shadow: 0 0 44px var(--accent-glow);
+    animation: welcomeMark 0.7s ease;
+  }
+  .welcome-box h1 { margin: 0; font-size: 20px; font-weight: 900; letter-spacing: -0.01em; }
+  .welcome-box p { margin: 6px 0 0; font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+  <div class="titlebar">
+    <div class="brand">
+      <span class="brand-name">FLING</span>
+      <span class="brand-sub">launcher</span>
+    </div>
+    <div class="nav-tabs">
+      <button class="nav-tab" id="tabTools">Tools</button>
+      <button class="nav-tab active" id="tabPlay">Play</button>
+      <button class="nav-tab" id="tabLeaderboard">Leaderboard</button>
+    </div>
+    <div class="title-actions">
+      <button class="update-pill" id="updatePill">
+        <span class="update-pill-fill" id="updatePillFill"></span>
+        <span class="update-pill-label" id="updatePillLabel"></span>
+      </button>
+      <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
+      <div class="win-controls">
+        <button class="win-btn" id="minimizeBtn" title="Minimize">&#8211;</button>
+        <button class="win-btn close-btn" id="closeBtn" title="Close">&#10005;</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="body-row" id="playView">
+    <div class="sidebar" id="sidebar"></div>
+
+    <div class="hero" id="hero">
+      <!-- background image / placeholder ring injected by renderHero() -->
+      <div class="hero-content" id="heroContent">
+        <div>
+          <h1 class="game-title" id="gameTitle">Alpha 1</h1>
+          <div class="status-row" id="statusRow"></div>
+          <div id="tutorialSlot"></div>
+        </div>
+        <div class="controls" id="controls">
+          <button class="play-btn" id="playBtn">▶ PLAY</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tools-view" id="toolsView">
+    <div class="uuu-row">
+      <div class="uuu-text">
+        <h2>UUU</h2>
+        <p>Unreal Engine Unlocker is a tool that injects a dll into an Unreal Engine 4 game that natively unlocks the developer console, activate the console in-game using the tilde key (`).</p>
+        <button class="download-btn" id="uuuDownloadBtn">&#8659; Download UUU</button>
+      </div>
+      <div class="uuu-image-wrap" id="uuuImageWrap">
+        <img src="assets/tutorials/example_uuu.png" alt="" id="uuuImage" />
+      </div>
+    </div>
+
+    <div class="uuu-row">
+      <div class="uuu-text">
+        <h2>FModel</h2>
+        <p>FModel is an Unreal Engine archive explorer — it opens a game's packaged .pak/.utoc files directly and lets you browse and export its assets (textures, meshes, sounds, and more) without touching the running game.</p>
+        <button class="download-btn" id="fmodelDownloadBtn">&#8659; Download FModel</button>
+      </div>
+      <div class="uuu-image-wrap" id="fmodelImageWrap">
+        <img src="assets/tutorials/example_fmodel.png" alt="" id="fmodelImage" />
+      </div>
+    </div>
+
+    <div class="command-list-title">Helpful Commands</div>
+    <div class="command-box" id="commandBox"></div>
+  </div>
+
+  <div class="leaderboard-view" id="leaderboardView">
+    <h2 class="leaderboard-heading">Leaderboard</h2>
+    <p class="leaderboard-sub">Pick a full game to see its top 10 world records, live from speedrun.com.</p>
+    <div class="grid-picker" id="leaderboardPicker"></div>
+    <div class="leaderboard-results" id="leaderboardResults" style="display:none;">
+      <div class="leaderboard-title-row">
+        <h3 id="leaderboardResultTitle"></h3>
+        <select class="leaderboard-category-select" id="leaderboardCategorySelect" style="display:none;"></select>
+      </div>
+      <div id="leaderboardResultBody"></div>
+    </div>
+  </div>
+
+  <!-- Settings modal -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <div class="modal-head">
+        <span>Settings</span>
+        <button class="icon-btn" id="closeModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <label for="themeSelect">Appearance</label>
+          <select id="themeSelect"></select>
+          <div class="field-hint" id="themeHint">Preview updates live — Cancel reverts to your saved theme.</div>
+        </div>
+        <div>
+          <label>Behaviour</label>
+          <label class="checkbox-row setting-row" for="animationsCheckbox">
+            <input type="checkbox" id="animationsCheckbox" />
+            Animations
+          </label>
+          <div class="field-hint">Uncheck to remove every transition and animation in the launcher.</div>
+        </div>
+        <div>
+          <label for="launchBehaviorSelect">When a game starts</label>
+          <select id="launchBehaviorSelect">
+            <option value="stay">Keep the launcher open</option>
+            <option value="minimize">Minimise the launcher</option>
+            <option value="close">Close the launcher</option>
+          </select>
+          <div class="field-hint">Closing the launcher means STOP and the "closed" notice are no longer available for that session.</div>
+        </div>
+        <div id="modInjectorSection">
+          <div class="section-title-row">
+            <label style="margin:0;">Custom mod injection</label>
+            <span class="badge">Coming soon</span>
+          </div>
+          <div class="disabled-section">
+            <select disabled>
+              <option>Select an alpha...</option>
+            </select>
+            <div class="path-row">
+              <input type="text" disabled placeholder="No override set" />
+              <button class="browse-btn" disabled>Browse</button>
+            </div>
+          </div>
+          <div class="field-hint">Per-alpha mod folder overrides aren't wired up yet.</div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-text" id="cancelBtn">Cancel</button>
+        <button class="btn-save" id="saveBtn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Install path modal (reused for Install button + right-click Edit Install Path) -->
+  <div class="overlay" id="pathOverlay">
+    <div class="modal">
+      <div class="modal-head">
+        <span id="pathModalTitle">Set Install Path</span>
+        <button class="icon-btn" id="closePathModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <label id="pathModalLabel">Install path</label>
+          <div class="path-row">
+            <input type="text" id="pathInput" placeholder="No folder selected" />
+            <button class="browse-btn" id="browseBtn">Browse...</button>
+            <button class="browse-btn" id="autoDetectBtn">Auto-detect</button>
+          </div>
+          <div class="field-hint">Point this at the folder containing that alpha's .exe, or try Auto-detect to check the default Steam install folders.</div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-text" id="pathCancelBtn">Cancel</button>
+        <button class="btn-save" id="pathSaveBtn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tutorial modal (popup shown when INSTALL is clicked) -->
+  <div class="overlay" id="tutorialOverlay">
+    <div class="modal modal-lg">
+      <div class="modal-head">
+        <span id="tutorialModalTitle">How to install</span>
+        <button class="icon-btn" id="closeTutorialModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="tutorial-modal-strip" id="tutorialModalStrip"></div>
+        <p class="tutorial-desc" id="tutorialModalDesc"></p>
+        <label class="checkbox-row" id="dontShowAgainRow">
+          <input type="checkbox" id="dontShowAgainCheckbox" />
+          Don't show this again
+        </label>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-text" id="tutorialCancelBtn">Close</button>
+        <button class="btn-save" id="tutorialContinueBtn">Continue to Install</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Launch-choice modal (popup shown when PLAY is clicked on a modded alpha) -->
+  <div class="overlay" id="playChoiceOverlay">
+    <div class="modal">
+      <div class="modal-head">
+        <span id="playChoiceModalTitle">Launch</span>
+        <button class="icon-btn" id="closePlayChoiceModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="choice-list">
+          <button class="choice-option" id="choiceMultiplayerBtn">
+            <span class="choice-title">Launch Multiplayer</span>
+            <span class="choice-sub">Patches mod files in first</span>
+          </button>
+          <button class="choice-option" id="choiceOfflineBtn">
+            <span class="choice-title">Launch Offline (vanilla)</span>
+            <span class="choice-sub">No mod files touched</span>
+          </button>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-text" id="playChoiceCancelBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="welcome-overlay" id="welcomeOverlay">
+    <div class="welcome-box">
+      <div class="welcome-mark"></div>
+      <h1>Welcome to Fling Launcher</h1>
+      <p>Your Hello Neighbor library, in one place</p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+  // Games list is no longer hardcoded here — it's fetched from the main
+  // process (games:list), which merges static per-alpha metadata, live
+  // mod-folder detection, and whatever install paths are actually
+  // persisted on disk. Starts empty until loaded.
+  let GAMES = [];
+  const GROUP_LABELS = { hn1: "HN1", hn2: "HN2" };
+
+  // A few alphas' icon/mod folder names on disk don't match their internal
+  // id (see main.js's ICON_FOLDER_OVERRIDES / MOD_FOLDER_OVERRIDES — these
+  // two mirror that mapping for the renderer's own asset paths).
+  const ICON_FILE_OVERRIDES = { f_hn1: "f_hn", a1_hn2: "hn2_a1" };
+  const BG_FILE_OVERRIDES = { f_hn1: "f_hn" };
+  // Library Grid / Leaderboard cover art (assets/grids/) follows the same
+  // friendly-folder-name convention as the sidebar icons.
+  const GRID_FILE_OVERRIDES = { f_hn1: "f_hn", a1_hn2: "hn2_a1" };
+  function iconFileFor(g) { return ICON_FILE_OVERRIDES[g.id] || g.id; }
+  function bgFileFor(g) { return BG_FILE_OVERRIDES[g.id] || g.id; }
+  function gridFileFor(g) { return GRID_FILE_OVERRIDES[g.id] || g.id; }
+
+  // The tutorial popup is now ALPHAS ONLY — which entries get one is set by
+  // the `tutorial` field on each roster entry in main.js's GAMES array, not
+  // by a list here. Full games, both HN1 betas, the HN2 beta and the HN2 demo
+  // go straight to the folder picker when INSTALL is clicked.
+  //
+  // BETA_TUTORIAL_IDS is kept because assets/tutorials/tutorial_beta_*.png
+  // still exist: flip either beta's `tutorial` back to true in main.js and it
+  // picks up that image set again automatically.
+  const BETA_TUTORIAL_IDS = new Set(["b_hn1_1", "b_hn1_3"]);
+
+  let state = {
+    selectedId: null,
+    hideTutorial: false,
+    theme: "dark",
+    animations: true,
+    launchBehavior: "stay",
+    flags: {
+      iconsEnabled: true,
+      modInjectorEnabled: true,
+      themes: ["dark", "light", "crimson", "midnight", "terminal", "sunset"],
+    },
+    view: "play",
+    // ids currently running (game process launched, not yet exited) and
+    // ids that have been launched at least once this session — the latter
+    // just flips the button's label from "PLAY" to "PLAY AGAIN".
+    runningIds: new Set(),
+    launchedIds: new Set(),
+  };
+
+  // context for whichever floating menu is open, and the path modal
+  let ctxMenuGameId = null;
+  let pathModalGameId = null;
+  let tutorialModalGameId = null;
+  let playChoiceGame = null;
+  let commandsLoaded = false;
+  // Snapshot of what's actually persisted, so Cancel can undo the live
+  // theme/animation preview.
+  let savedSettings = { theme: "dark", animations: true, launchBehavior: "stay" };
+
+  const sidebar = document.getElementById("sidebar");
+  const heroEl = document.getElementById("hero");
+  const heroContent = document.getElementById("heroContent");
+  const gameTitle = document.getElementById("gameTitle");
+  const statusRow = document.getElementById("statusRow");
+  const tutorialSlot = document.getElementById("tutorialSlot");
+  const controls = document.getElementById("controls");
+  const toast = document.getElementById("toast");
+
+  const playView = document.getElementById("playView");
+  const toolsView = document.getElementById("toolsView");
+  const leaderboardView = document.getElementById("leaderboardView");
+  const tabPlay = document.getElementById("tabPlay");
+  const tabTools = document.getElementById("tabTools");
+  const tabLeaderboard = document.getElementById("tabLeaderboard");
+  const commandBox = document.getElementById("commandBox");
+  const leaderboardPicker = document.getElementById("leaderboardPicker");
+  const leaderboardResults = document.getElementById("leaderboardResults");
+  const leaderboardResultTitle = document.getElementById("leaderboardResultTitle");
+  const leaderboardCategorySelect = document.getElementById("leaderboardCategorySelect");
+  const leaderboardResultBody = document.getElementById("leaderboardResultBody");
+
+  const overlay = document.getElementById("overlay");
+  const modInjectorSection = document.getElementById("modInjectorSection");
+  const themeSelect = document.getElementById("themeSelect");
+  const themeHint = document.getElementById("themeHint");
+  const animationsCheckbox = document.getElementById("animationsCheckbox");
+  const launchBehaviorSelect = document.getElementById("launchBehaviorSelect");
+
+  const pathOverlay = document.getElementById("pathOverlay");
+  const pathModalTitle = document.getElementById("pathModalTitle");
+  const pathInput = document.getElementById("pathInput");
+  const browseBtn = document.getElementById("browseBtn");
+  const autoDetectBtn = document.getElementById("autoDetectBtn");
+
+  const tutorialOverlay = document.getElementById("tutorialOverlay");
+  const tutorialModalTitle = document.getElementById("tutorialModalTitle");
+  const tutorialModalStrip = document.getElementById("tutorialModalStrip");
+  const tutorialModalDesc = document.getElementById("tutorialModalDesc");
+  const dontShowAgainCheckbox = document.getElementById("dontShowAgainCheckbox");
+
+  const playChoiceOverlay = document.getElementById("playChoiceOverlay");
+  const playChoiceModalTitle = document.getElementById("playChoiceModalTitle");
+
+  function getGame(id) { return GAMES.find(g => g.id === id); }
+  function getSelected() { return getGame(state.selectedId); }
+
+  // Guard against being opened outside Electron (e.g. double-clicked as a
+  // plain file in a browser) — window.launcher only exists via preload.js.
+  if (!window.launcher) {
+    document.body.innerHTML =
+      '<div style="padding:40px;font-family:sans-serif;color:#e8e4d8;background:#0d0f0d;height:100vh;">' +
+      '<h2>Fling Launcher needs to run inside Electron</h2>' +
+      '<p style="color:#8a8c6f;">Run <code>npm install</code> then <code>npm start</code> from the project folder instead of opening index.html directly.</p>' +
+      '</div>';
+    throw new Error("window.launcher API not available — not running inside Electron.");
+  }
+
+  // ---------- Window chrome ----------
+  document.getElementById("minimizeBtn").onclick = () => window.launcher.minimizeWindow();
+  document.getElementById("closeBtn").onclick = () => window.launcher.closeWindow();
+
+  // ---------- Top nav (Tools / Play / Leaderboard) ----------
+  function setView(view) {
+    state.view = view;
+    tabTools.classList.toggle("active", view === "tools");
+    tabPlay.classList.toggle("active", view === "play");
+    tabLeaderboard.classList.toggle("active", view === "leaderboard");
+    playView.classList.toggle("hidden", view !== "play");
+    toolsView.classList.toggle("open", view === "tools");
+    leaderboardView.classList.toggle("open", view === "leaderboard");
+    if (view === "tools") loadConsoleCommandsOnce();
+    if (view === "leaderboard") renderLeaderboardPicker();
+  }
+  tabTools.onclick = () => setView("tools");
+  tabPlay.onclick = () => setView("play");
+  tabLeaderboard.onclick = () => setView("leaderboard");
+
+  document.getElementById("uuuDownloadBtn").onclick = () => {
+    window.launcher.openExternal("https://mega.nz/file/MUhUlaqa#PI0ubSy_sQc4GouDPnZbulNSgQRUNIJeXNwLb2LnKhk");
+  };
+  document.getElementById("uuuImage").onerror = function () {
+    const wrap = document.getElementById("uuuImageWrap");
+    this.remove();
+    const fb = document.createElement("div");
+    fb.className = "uuu-image-fallback";
+    fb.textContent = "drop example_uuu.png in assets/tutorials/";
+    wrap.appendChild(fb);
+  };
+
+  document.getElementById("fmodelDownloadBtn").onclick = () => {
+    window.launcher.openExternal("https://fmodel.app/download");
+  };
+  document.getElementById("fmodelImage").onerror = function () {
+    const wrap = document.getElementById("fmodelImageWrap");
+    this.remove();
+    const fb = document.createElement("div");
+    fb.className = "uuu-image-fallback";
+    fb.textContent = "drop example_fmodel.png in assets/tutorials/";
+    wrap.appendChild(fb);
+  };
+
+  async function loadConsoleCommandsOnce() {
+    if (commandsLoaded) return;
+    commandsLoaded = true;
+    const commands = await window.launcher.getConsoleCommands();
+    commandBox.innerHTML = "";
+    if (!commands || commands.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "empty-hint";
+      empty.textContent = "No commands found — add assets/commandlist.txt to populate this list.";
+      commandBox.appendChild(empty);
+      commandsLoaded = false; // allow a retry once the file shows up
+      return;
+    }
+    commands.forEach(c => {
+      const row = document.createElement("div");
+      row.className = "command-row";
+      const name = document.createElement("span");
+      name.className = "command-name";
+      name.textContent = c.command;
+      const desc = document.createElement("span");
+      desc.className = "command-desc";
+      desc.textContent = c.description;
+      row.appendChild(name);
+      row.appendChild(desc);
+      commandBox.appendChild(row);
+    });
+  }
+
+  // ---------- Sidebar ----------
+  // Builds one reusable cover-art tile (Library Grid mode AND the
+  // Leaderboard tab's own game picker, which always uses this regardless of
+  // the Library Grid setting). Cover art comes from assets/grids/<file>.png,
+  // falling back to the text label if missing.
+  function buildGridTile(g, selected, onClick) {
+    const tile = document.createElement("button");
+    tile.className = "grid-tile" + (selected ? " selected" : "");
+    tile.title = g.full;
+
+    const art = document.createElement("div");
+    art.className = "grid-tile-art";
+    const img = document.createElement("img");
+    img.src = "assets/grids/" + gridFileFor(g) + ".png";
+    img.alt = "";
+    img.onerror = () => {
+      img.remove();
+      const fb = document.createElement("div");
+      fb.className = "grid-tile-fallback";
+      fb.textContent = g.short || g.label;
+      art.appendChild(fb);
+    };
+    art.appendChild(img);
+
+    tile.appendChild(art);
+    tile.onclick = onClick;
+    return tile;
+  }
+
+  function renderSidebar() {
+    sidebar.innerHTML = "";
+    const groups = ["hn1", "hn2"];
+    groups.forEach((groupId, gi) => {
+      const games = GAMES.filter(g => g.group === groupId);
+      if (games.length === 0) return;
+      if (gi > 0) {
+        const divider = document.createElement("div");
+        divider.className = "sidebar-divider";
+        sidebar.appendChild(divider);
+      }
+      const groupWrap = document.createElement("div");
+      groupWrap.className = "sidebar-group";
+      const label = document.createElement("div");
+      label.className = "sidebar-group-label";
+      label.textContent = GROUP_LABELS[groupId];
+      groupWrap.appendChild(label);
+
+      games.forEach(g => {
+        const selectGame = () => {
+          state.selectedId = g.id;
+          renderSidebar();
+          renderHero();
+          window.launcher.setSelectedAlpha(g.id);
+        };
+
+        // Classic icon-rail item — wrapper so the abbreviated caption sits
+        // underneath the button.
+        const item = document.createElement("div");
+        item.className = "game-item" + (g.id === state.selectedId ? " selected" : "");
+
+        const btn = document.createElement("button");
+        btn.className = "game-btn" + (g.id === state.selectedId ? " active" : "");
+        btn.title = g.full + (g.installPath ? "" : " — not installed");
+
+        const btnLabel = document.createElement("span");
+        btnLabel.className = "game-btn-label";
+        btnLabel.textContent = g.label;
+        btn.appendChild(btnLabel);
+
+        // Optional per-alpha icon (assets/icons/<file>.png), disabled
+        // entirely when the "iconsoff" flag file is present. Falls back to
+        // the text label above if the file doesn't exist.
+        if (state.flags.iconsEnabled) {
+          const icon = document.createElement("img");
+          icon.className = "game-btn-icon";
+          icon.src = "assets/icons/" + iconFileFor(g) + ".png";
+          icon.alt = "";
+          icon.onerror = () => icon.remove();
+          btn.appendChild(icon);
+        }
+
+        btn.onclick = selectGame;
+        btn.oncontextmenu = (e) => { e.preventDefault(); openSidebarContextMenu(e, g.id); };
+
+        // Abbreviated name under the icon (A1, HN2, HN2D, HNHAS...). Falls
+        // back to the in-button label if an entry has no `short` set.
+        const cap = document.createElement("div");
+        cap.className = "game-btn-cap";
+        cap.textContent = g.short || g.label;
+        cap.title = g.full;
+
+        item.appendChild(btn);
+        item.appendChild(cap);
+        groupWrap.appendChild(item);
+      });
+      sidebar.appendChild(groupWrap);
+    });
+  }
+
+  // ---------- Leaderboard tab ----------
+  // The picker is ALWAYS a grid, independent of the Library Grid setting.
+  let leaderboardSelectedId = null;
+  let leaderboardLoadToken = 0;
+
+  function renderLeaderboardPicker() {
+    leaderboardPicker.innerHTML = "";
+    // Full games only — speedrun.com boards for alphas/betas/the demo are
+    // sparse-to-nonexistent, and every full game is guaranteed to have one.
+    GAMES.filter(g => g.isFullGame).forEach(g => {
+      const tile = buildGridTile(g, g.id === leaderboardSelectedId, () => selectLeaderboardGame(g.id));
+      leaderboardPicker.appendChild(tile);
+    });
+  }
+
+  function selectLeaderboardGame(id) {
+    leaderboardSelectedId = id;
+    renderLeaderboardPicker();
+    // A fresh game pick always starts from that title's default (first)
+    // category — the dropdown itself gets populated once main.js responds
+    // with the full category list.
+    loadLeaderboard(id, undefined);
+  }
+
+  // categoryId omitted -> main.js's own default (first per-game category).
+  // Re-run with a specific categoryId when the dropdown changes, reusing the
+  // already-cached category list from main.js instead of re-resolving the
+  // title on speedrun.com.
+  async function loadLeaderboard(id, categoryId) {
+    const g = getGame(id);
+    if (!g) return;
+
+    const myToken = ++leaderboardLoadToken;
+    leaderboardResults.style.display = "";
+    leaderboardResultTitle.textContent = g.full;
+    leaderboardCategorySelect.style.display = "none";
+    leaderboardResultBody.innerHTML = '<div class="leaderboard-loading">Loading top 10 from speedrun.com…</div>';
+
+    const result = await window.launcher.getLeaderboard(id, categoryId);
+    if (myToken !== leaderboardLoadToken) return; // a newer pick superseded this one
+
+    if (!result.ok) {
+      leaderboardResultBody.innerHTML = '<div class="leaderboard-empty-hint"></div>';
+      leaderboardResultBody.firstChild.textContent = result.error || "Couldn't load the leaderboard.";
+      return;
+    }
+
+    // Populate the category dropdown from what main.js returned (only
+    // worth showing if the title actually has more than one per-game
+    // category) — rebuilt every load so a game switch shows the right set,
+    // but the select's own onchange is guarded against re-firing itself.
+    const categories = result.categories || [];
+    if (categories.length > 1) {
+      leaderboardCategorySelect.innerHTML = "";
+      categories.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c.id;
+        opt.textContent = c.name;
+        leaderboardCategorySelect.appendChild(opt);
+      });
+      leaderboardCategorySelect.value = result.categoryId || categories[0].id;
+      leaderboardCategorySelect.style.display = "";
+    }
+
+    if (!result.runs || result.runs.length === 0) {
+      leaderboardResultBody.innerHTML = '<div class="leaderboard-empty-hint">No runs on the board yet for this category.</div>';
+      return;
+    }
+
+    const table = document.createElement("table");
+    table.className = "leaderboard-table";
+    table.innerHTML = "<thead><tr><th>#</th><th>Player</th><th>Time</th><th></th></tr></thead>";
+    const tbody = document.createElement("tbody");
+    result.runs.forEach(run => {
+      const row = document.createElement("tr");
+
+      const rankCell = document.createElement("td");
+      rankCell.className = "leaderboard-rank" + (run.place === 1 ? " gold" : "");
+      rankCell.textContent = "#" + run.place;
+
+      const playerCell = document.createElement("td");
+      playerCell.textContent = run.player;
+
+      const timeCell = document.createElement("td");
+      timeCell.className = "leaderboard-time";
+      timeCell.textContent = run.time;
+
+      const linkCell = document.createElement("td");
+      if (run.videoUrl) {
+        const a = document.createElement("a");
+        a.className = "leaderboard-video-link";
+        a.href = "#";
+        a.textContent = "Watch ↗";
+        a.onclick = (e) => { e.preventDefault(); window.launcher.openExternal(run.videoUrl); };
+        linkCell.appendChild(a);
+      }
+
+      row.appendChild(rankCell);
+      row.appendChild(playerCell);
+      row.appendChild(timeCell);
+      row.appendChild(linkCell);
+      tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
+    leaderboardResultBody.innerHTML = "";
+    leaderboardResultBody.appendChild(table);
+  }
+
+  leaderboardCategorySelect.onchange = () => {
+    if (leaderboardSelectedId) loadLeaderboard(leaderboardSelectedId, leaderboardCategorySelect.value);
+  };
+
+
+  // ---------- Right-click sidebar context menu ----------
+  function closeFloatingMenus() {
+    document.querySelectorAll(".floating-menu").forEach(m => m.remove());
+    document.removeEventListener("click", closeFloatingMenus);
+  }
+
+  function openSidebarContextMenu(e, gameId) {
+    closeFloatingMenus();
+    const g = getGame(gameId);
+    const menu = document.createElement("div");
+    menu.className = "floating-menu";
+    menu.style.left = e.clientX + "px";
+    menu.style.top = e.clientY + "px";
+
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "Edit Install Path";
+    editBtn.onclick = (ev) => { ev.stopPropagation(); closeFloatingMenus(); openPathModal(gameId); };
+    menu.appendChild(editBtn);
+
+    const openFolderBtn = document.createElement("button");
+    openFolderBtn.textContent = "Open File Location";
+    openFolderBtn.disabled = !g.installPath;
+    openFolderBtn.onclick = async (ev) => {
+      ev.stopPropagation();
+      closeFloatingMenus();
+      const result = await window.launcher.openInstallFolder(gameId);
+      if (!result || !result.ok) showToast("Couldn't open that folder — it may no longer exist.");
+    };
+    menu.appendChild(openFolderBtn);
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "danger";
+    deleteBtn.textContent = "Delete";
+    deleteBtn.disabled = !g.installPath;
+    deleteBtn.onclick = async (ev) => {
+      ev.stopPropagation();
+      await window.launcher.clearInstallPath(gameId);
+      await refreshGames();
+      closeFloatingMenus();
+      showToast(g.full + " install path cleared");
+    };
+    menu.appendChild(deleteBtn);
+
+    document.body.appendChild(menu);
+    // keep menu on-screen
+    const rect = menu.getBoundingClientRect();
+    if (rect.right > window.innerWidth) menu.style.left = (window.innerWidth - rect.width - 8) + "px";
+    if (rect.bottom > window.innerHeight) menu.style.top = (window.innerHeight - rect.height - 8) + "px";
+
+    setTimeout(() => document.addEventListener("click", closeFloatingMenus), 0);
+  }
+
+  // ---------- Tutorial popup (shown when INSTALL is clicked) ----------
+  function handleInstallClick(gameId) {
+    const g = getGame(gameId);
+    if (!g || !g.tutorial) {
+      // Not an alpha — straight to the folder picker, no tutorial popup.
+      openPathModal(gameId);
+      return;
+    }
+    if (state.hideTutorial) {
+      openPathModal(gameId);
+    } else {
+      openTutorialModal(gameId);
+    }
+  }
+
+  function openTutorialModal(gameId) {
+    tutorialModalGameId = gameId;
+    const g = getGame(gameId);
+    tutorialModalTitle.textContent = "How to install — " + g.full;
+    tutorialModalDesc.textContent = g.description || "[PLACEHOLDER]";
+    dontShowAgainCheckbox.checked = false;
+
+    // Shared tutorial images: HN1 Beta 1/3 use their own set, everything
+    // else (alphas, Hello Guest, Hide and Seek) shares tutorial_1/2/3.png.
+    const prefix = BETA_TUTORIAL_IDS.has(g.id) ? "tutorial_beta_" : "tutorial_";
+
+    tutorialModalStrip.innerHTML = "";
+    [1, 2, 3].forEach(n => {
+      const frame = document.createElement("div");
+      frame.className = "tutorial-frame";
+      const num = document.createElement("span");
+      num.className = "tutorial-num";
+      num.textContent = n;
+      const filename = prefix + n + ".png";
+      const img = document.createElement("img");
+      img.src = "assets/tutorials/" + filename;
+      img.onerror = () => {
+        img.remove();
+        const fb = document.createElement("div");
+        fb.className = "tutorial-fallback";
+        fb.textContent = filename;
+        frame.appendChild(fb);
+      };
+      frame.appendChild(img);
+      frame.appendChild(num);
+      tutorialModalStrip.appendChild(frame);
+    });
+
+    tutorialOverlay.classList.add("open");
+  }
+  document.getElementById("closeTutorialModal").onclick = () => tutorialOverlay.classList.remove("open");
+  document.getElementById("tutorialCancelBtn").onclick = () => tutorialOverlay.classList.remove("open");
+  document.getElementById("tutorialContinueBtn").onclick = async () => {
+    if (dontShowAgainCheckbox.checked) {
+      state.hideTutorial = true;
+      await window.launcher.saveSettings({ hideTutorial: true });
+    }
+    tutorialOverlay.classList.remove("open");
+    if (tutorialModalGameId) openPathModal(tutorialModalGameId);
+  };
+
+  // ---------- Install path modal ----------
+  function openPathModal(gameId) {
+    pathModalGameId = gameId;
+    const g = getGame(gameId);
+    pathModalTitle.textContent = (g.installPath ? "Edit" : "Set") + " Install Path — " + g.full;
+    pathInput.value = g.installPath || "";
+    pathOverlay.classList.add("open");
+  }
+  document.getElementById("closePathModal").onclick = () => pathOverlay.classList.remove("open");
+  document.getElementById("pathCancelBtn").onclick = () => pathOverlay.classList.remove("open");
+  browseBtn.onclick = async () => {
+    // Real native folder picker (dialog.showOpenDialog) via the main process.
+    const chosen = await window.launcher.browseForFolder();
+    if (chosen) pathInput.value = chosen;
+  };
+  autoDetectBtn.onclick = async () => {
+    const result = await window.launcher.autoDetectPath(pathModalGameId);
+    if (result.ok) {
+      pathInput.value = result.path;
+      showToast("Found it — " + result.path);
+    } else {
+      showToast(result.error);
+    }
+  };
+  document.getElementById("pathSaveBtn").onclick = async () => {
+    const g = getGame(pathModalGameId);
+    if (g) {
+      const value = pathInput.value.trim();
+      if (value) {
+        await window.launcher.setInstallPath(g.id, value);
+      } else {
+        await window.launcher.clearInstallPath(g.id);
+      }
+      await refreshGames();
+      showToast(g.full + " install path saved");
+    }
+    pathOverlay.classList.remove("open");
+  };
+
+  // ---------- Hero ----------
+  function renderHero() {
+    const g = getSelected();
+    if (!g) return;
+    gameTitle.textContent = g.full;
+    tutorialSlot.innerHTML = "";
+
+    // Retrigger the fade-in animation each time a different entry is
+    // selected (removing + re-adding the class forces a reflow).
+    heroContent.classList.remove("fade-in");
+    void heroContent.offsetWidth;
+    heroContent.classList.add("fade-in");
+
+    // clear any previous background image element
+    const oldBg = heroEl.querySelector(".hero-bg-img");
+    if (oldBg) oldBg.remove();
+    const oldRing = heroEl.querySelector(".art-placeholder");
+    if (oldRing) oldRing.remove();
+
+    // Cover art (assets/backgrounds/[file].png) is independent of install
+    // state — it's per-alpha branding art, not tied to whether the alpha is
+    // installed. Load it unconditionally so it doesn't vanish just because a
+    // path was cleared; only whether the PLAY/INSTALL flow and status row
+    // show below depends on installPath.
+    const bgFile = bgFileFor(g);
+    const bgImg = document.createElement("img");
+    bgImg.className = "hero-bg-img";
+    bgImg.src = "assets/backgrounds/" + bgFile + ".png";
+    bgImg.onerror = () => {
+      bgImg.remove();
+      const ring = document.createElement("div");
+      ring.className = "art-placeholder";
+      ring.innerHTML = '<div class="art-circle">drop cover art here — assets/backgrounds/' + bgFile + '.png</div>';
+      heroEl.insertBefore(ring, heroEl.firstChild);
+    };
+    heroEl.insertBefore(bgImg, heroEl.firstChild);
+
+    if (!g.installPath) {
+      // STATE A — not installed. Tutorial images + the per-alpha
+      // description live in a popup triggered by the INSTALL button
+      // (see openTutorialModal), not inline in the hero.
+      statusRow.className = "status-row dim";
+      statusRow.textContent = "⤓ Not installed yet";
+
+      controls.innerHTML = '<button class="play-btn" id="playBtn">⤓ INSTALL</button>';
+      document.getElementById("playBtn").onclick = () => handleInstallClick(g.id);
+      return;
+    }
+
+    // STATE B — installed
+    if (g.modded) {
+      statusRow.className = "status-row good";
+      statusRow.textContent = " Multiplayer mod available";
+    } else {
+      statusRow.className = "status-row dim";
+      statusRow.textContent = " Singleplayer only";
+    }
+
+    const isRunning = state.runningIds.has(g.id);
+    const hasLaunchedBefore = state.launchedIds.has(g.id);
+    const playLabel = isRunning ? "■ STOP" : (hasLaunchedBefore ? "▶ PLAY AGAIN" : "▶ PLAY");
+
+    controls.innerHTML = '<button class="play-btn" id="playBtn">' + playLabel + '</button>';
+    const btn = document.getElementById("playBtn");
+
+    if (isRunning) {
+      btn.onclick = () => stopGame(g);
+    } else if (g.modded) {
+      btn.onclick = () => openPlayChoiceModal(g);
+    } else {
+      btn.onclick = () => launchGame(g, false);
+    }
+  }
+
+  // ---------- Launch-choice modal (Multiplayer / Offline), centered popup ----------
+  function openPlayChoiceModal(g) {
+    playChoiceGame = g;
+    playChoiceModalTitle.textContent = "Launch — " + g.full;
+    playChoiceOverlay.classList.add("open");
+  }
+  document.getElementById("closePlayChoiceModal").onclick = () => playChoiceOverlay.classList.remove("open");
+  document.getElementById("playChoiceCancelBtn").onclick = () => playChoiceOverlay.classList.remove("open");
+  document.getElementById("choiceMultiplayerBtn").onclick = () => {
+    playChoiceOverlay.classList.remove("open");
+    if (playChoiceGame) launchGame(playChoiceGame, true);
+  };
+  document.getElementById("choiceOfflineBtn").onclick = () => {
+    playChoiceOverlay.classList.remove("open");
+    if (playChoiceGame) launchGame(playChoiceGame, false);
+  };
+
+  async function launchGame(g, modded) {
+    showToast((modded ? "Installing mod files, then launching " : "Launching ") + g.full + (modded ? "" : " (vanilla)") + "...");
+    const result = await window.launcher.launch(g.id, modded);
+    if (result.ok) {
+      state.runningIds.add(g.id);
+      state.launchedIds.add(g.id);
+      showToast(g.full + " launched.");
+      if (state.selectedId === g.id) renderHero();
+
+      // "When a game starts" setting. Delayed slightly so the launch toast is
+      // visible for a beat first, and so the game has a moment to take focus.
+      if (state.launchBehavior === "minimize") {
+        setTimeout(() => window.launcher.minimizeWindow(), 700);
+      } else if (state.launchBehavior === "close") {
+        setTimeout(() => window.launcher.closeWindow(), 700);
+      }
+    } else {
+      showToast("Couldn't launch " + g.full + ": " + result.error);
+    }
+  }
+
+  async function stopGame(g) {
+    showToast("Stopping " + g.full + "...");
+    const result = await window.launcher.stop(g.id);
+    if (!result.ok) {
+      showToast("Couldn't stop " + g.full + ": " + result.error);
+    }
+    // On success, state.runningIds is cleared by the game:closed push below
+    // once the process actually exits — not optimistically here.
+  }
+
+  // Pushed from main.js whenever a launched game's process exits — flips
+  // that entry's button back from "RUNNING" to "PLAY AGAIN".
+  window.launcher.onGameClosed((id) => {
+    state.runningIds.delete(id);
+    const g = getGame(id);
+    if (g) showToast(g.full + " closed.");
+    if (state.selectedId === id) renderHero();
+  });
+
+  let toastTimer = null;
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
+  }
+
+  // ---------- Appearance / animations ----------
+  // Human-readable names for the theme ids main.js knows about. Anything not
+  // listed here still works — it just shows its raw id. All six are normal,
+  // always-available options — no gated/experimental subset.
+  const THEME_NAMES = {
+    dark: "Dark",
+    light: "Light",
+    crimson: "Crimson",
+    midnight: "Midnight",
+    terminal: "Terminal",
+    sunset: "Sunset",
+  };
+
+  function availableThemes() {
+    return (state.flags.themes && state.flags.themes.length)
+      ? state.flags.themes
+      : ["dark", "light", "crimson", "midnight", "terminal", "sunset"];
+  }
+
+  function applyTheme(theme) {
+    const allowed = availableThemes();
+    state.theme = allowed.includes(theme) ? theme : "dark";
+    document.documentElement.setAttribute("data-theme", state.theme);
+  }
+
+  function applyAnimations(on) {
+    state.animations = !!on;
+    document.documentElement.setAttribute("data-animations", state.animations ? "on" : "off");
+  }
+
+  function populateThemeSelect() {
+    themeSelect.innerHTML = "";
+    availableThemes().forEach(id => {
+      const opt = document.createElement("option");
+      opt.value = id;
+      opt.textContent = THEME_NAMES[id] || id;
+      themeSelect.appendChild(opt);
+    });
+    themeSelect.value = state.theme;
+  }
+
+  // ---------- Settings modal ----------
+  // Re-fetch the flag files fresh every time Settings opens, rather than
+  // relying on whatever was read once at startup — otherwise adding/removing
+  // "iconsoff"/"modinjectoroff" while the app is running never shows up
+  // until a full relaunch.
+  document.getElementById("settingsBtn").onclick = async () => {
+    state.flags = await window.launcher.getFlags();
+    populateThemeSelect();
+    animationsCheckbox.checked = state.animations;
+    launchBehaviorSelect.value = state.launchBehavior;
+    modInjectorSection.style.display = state.flags.modInjectorEnabled ? "" : "none";
+    overlay.classList.add("open");
+  };
+
+  // Theme and animations preview live while the modal is open, so you can see
+  // what you picked before committing — Cancel puts the old values back.
+  themeSelect.onchange = () => applyTheme(themeSelect.value);
+  animationsCheckbox.onchange = () => applyAnimations(animationsCheckbox.checked);
+
+  function closeSettingsWithoutSaving() {
+    applyTheme(savedSettings.theme);
+    applyAnimations(savedSettings.animations);
+    overlay.classList.remove("open");
+  }
+  document.getElementById("closeModal").onclick = closeSettingsWithoutSaving;
+  document.getElementById("cancelBtn").onclick = closeSettingsWithoutSaving;
+
+  document.getElementById("saveBtn").onclick = async () => {
+    state.launchBehavior = launchBehaviorSelect.value;
+    const result = await window.launcher.saveSettings({
+      theme: state.theme,
+      animations: state.animations,
+      launchBehavior: state.launchBehavior,
+    });
+    // main.js is the authority on what actually got persisted, so take that
+    // back rather than trusting what was on screen.
+    if (result && result.settings) {
+      applyTheme(result.settings.theme);
+      applyAnimations(result.settings.animations);
+      state.launchBehavior = result.settings.launchBehavior;
+    }
+    savedSettings = { theme: state.theme, animations: state.animations, launchBehavior: state.launchBehavior };
+    renderSidebar();
+    overlay.classList.remove("open");
+  };
+
+  // ---------- Data loading ----------
+  async function refreshGames() {
+    GAMES = await window.launcher.listGames();
+    if (!state.selectedId || !getGame(state.selectedId)) {
+      state.selectedId = GAMES.length ? GAMES[0].id : null;
+    }
+    renderSidebar();
+    renderHero();
+  }
+
+  // ---------- Update manager ----------
+  const updatePill = document.getElementById("updatePill");
+  const updatePillFill = document.getElementById("updatePillFill");
+  const updatePillLabel = document.getElementById("updatePillLabel");
+  let updateInfo = null; // result of the last successful update:check
+  let updateState = "idle"; // idle | available | downloading | ready
+
+  function setUpdatePill(newState, opts = {}) {
+    updateState = newState;
+    updatePill.classList.toggle("show", newState !== "idle");
+    updatePill.disabled = newState === "downloading";
+    if (newState === "available") {
+      updatePillLabel.textContent = "Update v" + opts.version + " available";
+      updatePillFill.style.width = "0%";
+    } else if (newState === "downloading") {
+      updatePillLabel.textContent = "Downloading… " + (opts.percent != null ? opts.percent + "%" : "");
+      updatePillFill.style.width = (opts.percent || 0) + "%";
+    } else if (newState === "ready") {
+      updatePillLabel.textContent = "Restart & Install";
+      updatePillFill.style.width = "100%";
+    }
+  }
+
+  updatePill.onclick = async () => {
+    if (updateState === "available") {
+      setUpdatePill("downloading", { percent: 0 });
+      const result = await window.launcher.downloadUpdate();
+      if (!result || !result.ok) {
+        showToast("Update download failed" + (result && result.error ? ": " + result.error : "") + ".");
+        setUpdatePill("available", { version: updateInfo.latestVersion });
+        return;
+      }
+      setUpdatePill("ready", { version: updateInfo.latestVersion });
+    } else if (updateState === "ready") {
+      updatePill.disabled = true;
+      const result = await window.launcher.installUpdate();
+      if (!result || !result.ok) {
+        showToast("Couldn't start the installer" + (result && result.error ? ": " + result.error : "") + ".");
+        updatePill.disabled = false;
+      }
+      // On success the app quits itself shortly after — nothing else to do.
+    }
+  };
+
+  window.launcher.onUpdateProgress((data) => {
+    if (updateState !== "downloading") return;
+    setUpdatePill("downloading", { percent: data.percent });
+  });
+
+  async function checkForUpdateOnce() {
+    try {
+      const result = await window.launcher.checkForUpdate();
+      if (result && result.ok && result.available) {
+        updateInfo = result;
+        setUpdatePill(result.alreadyDownloaded ? "ready" : "available", { version: result.latestVersion });
+      }
+    } catch (e) {
+      // Silent on purpose — offline, rate-limited, GitHub down, etc.
+      // shouldn't nag with a toast on every launch.
+    }
+  }
+
+  async function init() {
+    // Read one-shot triggers from assets/data FIRST — if it just reset the
+    // hideTutorial setting, the settings:get call right after needs to see
+    // the already-reset value.
+    const boot = await window.launcher.getBootFlags();
+
+    const settings = await window.launcher.getSettings();
+    state.hideTutorial = settings.hideTutorial;
+    state.launchBehavior = settings.launchBehavior || "stay";
+
+    // Flags first — applyTheme needs the available theme list before it
+    // decides whether a persisted theme is still valid.
+    state.flags = await window.launcher.getFlags();
+    applyTheme(settings.theme || "dark");
+    applyAnimations(settings.animations !== false);
+    savedSettings = { theme: state.theme, animations: state.animations, launchBehavior: state.launchBehavior };
+
+    // Reopen on whichever alpha was last selected. refreshGames() still
+    // falls back to the first alpha if this id no longer exists (e.g. the
+    // GAMES list changed) or nothing was ever selected.
+    const lastSelected = await window.launcher.getSelectedAlpha();
+    state.selectedId = lastSelected.selectedId || null;
+
+    await refreshGames();
+
+    // Non-blocking — a slow/failed GitHub check shouldn't hold up startup.
+    checkForUpdateOnce();
+
+    if (boot.showWelcome && state.animations) showWelcomeAnimation();
+    else if (boot.tutorialWasReset) showToast("Tutorial reset — it'll show again next time you hit INSTALL.");
+  }
+
+  function showWelcomeAnimation() {
+    const el = document.getElementById("welcomeOverlay");
+    el.classList.add("show");
+    setTimeout(() => el.classList.add("fade-out"), 1800);
+    setTimeout(() => el.remove(), 2300);
+  }
+
+  init();
+</script>
+
+</body>
+</html>
